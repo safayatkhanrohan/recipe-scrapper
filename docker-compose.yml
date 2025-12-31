@@ -1,0 +1,9 @@
+services:
+
+  web-scraper:
+    build: .
+    ports:
+      - '8000:8000'
+    networks:
+      - eeina-network
+    restart: always
