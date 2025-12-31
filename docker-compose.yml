@@ -2,7 +2,7 @@ services:
   scraper-v2:
     build: .
     ports:
-      - '8000:8000'
+      - '6000:6000'
     networks:
       - eeina_network
     restart: always
