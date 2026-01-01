@@ -2,9 +2,9 @@ services:
   scraper-v2:
     build: .
     env_file:
-      - ../app-eeina-backend/.env
+      - .env
     ports:
-      - '6000:6000'
+      - '8000:6000'
     networks:
       - eeina_network
     restart: always
