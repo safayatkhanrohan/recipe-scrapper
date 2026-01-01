@@ -299,7 +299,8 @@ def validate_recipe_structure(recipe_data: Dict) -> Dict:
 def try_recipe_scraper(url: str) -> Dict:
     """Attempt to scrape using recipe-scrapers package."""
     try:
-        scraper = scrape_me(url)
+        # Pass headers to help avoid 403 errors
+        scraper = scrape_me(url, headers=HEADERS)
         result = scraper.to_json()
         return format_recipe_scrapers_data(result)
     except Exception as e:
