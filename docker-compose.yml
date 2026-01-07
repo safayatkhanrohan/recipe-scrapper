@@ -6,9 +6,9 @@ services:
     ports:
       - '8000:8000'
     networks:
-      - eeina_network
+      - eeina-network
     restart: always
 
 networks:
-  eeina_network:
+  eeina-network:
     external: true
