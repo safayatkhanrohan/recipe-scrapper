@@ -1,9 +1,10 @@
 import time
-from fastapi import FastAPI, Query, HTTPException
+from fastapi import FastAPI, Query, HTTPException, Security, status, Depends
+from fastapi.security import APIKeyHeader
 from typing import Optional
 import uvicorn
 
-from config import setup_logging, load_environment, configure_gemini
+from config import setup_logging, load_environment, configure_gemini, get_auth_key
 from models import SuccessResponse, ErrorResponse, HealthResponse, RecipeResponse
 from utils import get_platform
 from scraper import (
@@ -17,6 +18,22 @@ from scraper import (
 load_environment()
 logger = setup_logging()
 gemini_api_key = configure_gemini()
+AUTH_KEY = get_auth_key()
+
+api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
+
+async def get_api_key(api_key_header: str = Security(api_key_header)):
+    if not AUTH_KEY:
+        # If no AUTH_KEY is set in env, allow access (or you could decide to block)
+         logger.warning("No AUTH_KEY configured, API is unsecured")
+         return None
+    
+    if api_key_header == AUTH_KEY:
+        return api_key_header
+    raise HTTPException(
+        status_code=status.HTTP_403_FORBIDDEN,
+        detail="Could not validate credentials",
+    )
 
 app = FastAPI(
     title="Unified Recipe Scraper API",
@@ -85,6 +102,7 @@ async def health_check():
 @app.get(
     "/scrape",
     response_model=SuccessResponse,
+    dependencies=[Depends(get_api_key)],
     responses={
         200: {"description": "Recipe successfully scraped and formatted"},
         500: {

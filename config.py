@@ -41,6 +41,15 @@ def configure_gemini():
         return None
 
 
+def get_auth_key():
+    """Retrieves the AUTH_KEY from environment variables."""
+    auth_key = os.getenv("AUTH_KEY")
+    logger = logging.getLogger(__name__)
+    if not auth_key:
+        logger.warning("AUTH_KEY not found in environment variables. API will be unsecured!")
+    return auth_key
+
+
 # Constants
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
